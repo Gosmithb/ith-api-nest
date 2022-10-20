@@ -8,8 +8,16 @@ export class UserController {
 
     }
     @Post()
-    Create(@Body() params : User ):void{
-        this.userService.create(params)
+    Create(@Body() params : User ): string | boolean{
+        if(this.userService.userExists(Number(params.id))){
+            return "El usuario ya existe"
+        }
+        try {
+            this.userService.create(params)
+            return true
+        } catch (error) {
+            console.log({error})
+        }
     }
     @Get('/all')
     getUsers(): User[] {
