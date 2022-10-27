@@ -1,12 +1,16 @@
-import { ISales } from './../../models/Sales';
+import { ISales } from '../../models/Sales';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Sales } from 'src/entities/sales.entity';
+import { DetailsService } from '../Details/details.service';
 
 @Injectable()
 export class SalesService {
-    constructor( @InjectRepository(Sales) private salesEntity : Repository< Sales > ){
+    constructor( @InjectRepository(Sales) 
+        private salesEntity : Repository< Sales >,
+        private detailsService : DetailsService
+        ){
     }
 
     async create( sale : ISales ){
@@ -16,11 +20,13 @@ export class SalesService {
         sale.details.forEach(item =>{
             total = total + ( item.quantity * item.unit_price )
         })
-        return await this.salesEntity.insert({
+        const response = await this.salesEntity.save({
             id_user : sale.id_user,
             date : date,
             total
         })
+
+        await this.detailsService.create(response.id, sale.details);
     }
 
 }

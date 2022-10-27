@@ -3,7 +3,7 @@ import { Connection } from './configs/DBConnection';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './Users/user/user.module';
+import { UserModule } from './api/Users/user/user.module';
 
 @Module({
   imports: [Connection, UserModule],
